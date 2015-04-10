@@ -84,6 +84,12 @@
     return recording;
 }
 
+- (BOOL)recordExistsForRequest:(NSURLRequest *)request {
+    VCRRequestKey *key = [VCRRequestKey keyForObject:request];
+    NSArray *recordings = self.responseDictionary[key];
+    return recordings.count > 0;
+}
+
 - (VCRRecording *)recordingForRequest:(NSURLRequest *)request {
     VCRRequestKey *key = [VCRRequestKey keyForObject:request];
     return [self recordingForRequestKey:key];

@@ -39,6 +39,8 @@
 
 - (VCRRecording *)recordingForRequest:(NSURLRequest *)request;
 
+- (BOOL)recordExistsForRequest:(NSURLRequest *)request;
+
 - (NSArray *)allKeys;
 
 - (NSData *)data;
