@@ -77,10 +77,8 @@
     NSArray *recordings = self.responseDictionary[key];
     VCRRecording *recording = recordings.firstObject;
     NSMutableArray *updatedRecords = [NSMutableArray arrayWithArray:recordings];
-    if (updatedRecords.count > 0) {
+    if (updatedRecords.count > 1) {
         [updatedRecords removeObjectAtIndex:0];
-    } else {
-        updatedRecords = [NSMutableArray array];
     }
     self.responseDictionary[key] = updatedRecords;
     return recording;
