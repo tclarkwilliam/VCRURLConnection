@@ -65,11 +65,25 @@
 
 - (void)addRecording:(VCRRecording *)recording {
     VCRRequestKey *key = [VCRRequestKey keyForObject:recording];
-    [self.responseDictionary setObject:recording forKey:key];
+    NSArray *recordings = self.responseDictionary[key];
+    if (!recordings) {
+        recordings = @[];
+    }
+    NSArray *updatedRecords = [recordings arrayByAddingObject:recording];
+    [self.responseDictionary setObject:updatedRecords forKey:key];
 }
 
 - (VCRRecording *)recordingForRequestKey:(VCRRequestKey *)key {
-    return [self.responseDictionary objectForKey:key];
+    NSArray *recordings = self.responseDictionary[key];
+    VCRRecording *recording = recordings.firstObject;
+    NSMutableArray *updatedRecords = [NSMutableArray arrayWithArray:recordings];
+    if (updatedRecords.count > 0) {
+        [updatedRecords removeObjectAtIndex:0];
+    } else {
+        updatedRecords = [NSMutableArray array];
+    }
+    self.responseDictionary[key] = updatedRecords;
+    return recording;
 }
 
 - (VCRRecording *)recordingForRequest:(NSURLRequest *)request {
