@@ -96,11 +96,13 @@
 }
 
 - (id)JSON {
-    NSMutableArray *recordings = [NSMutableArray array];
-    for (VCRRecording *recording in self.responseDictionary.allValues) {
-        [recordings addObject:[recording JSON]];
+    NSMutableArray *jsonRecordings = [NSMutableArray array];
+    for (NSArray *recordings in self.responseDictionary.allValues) {
+        for (VCRRecording *recording in recordings) {
+            [jsonRecordings addObject:[recording JSON]];
+        }
     }
-    return recordings;
+    return jsonRecordings;
 }
 
 - (NSData *)data {
