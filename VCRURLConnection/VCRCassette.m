@@ -80,7 +80,7 @@
     
     NSArray *updatedRecords = [recordings arrayByAddingObject:recording];
     if (isIngoreMultipleType) {
-        NSArray *updatedRecords = @[recording];
+        updatedRecords = @[recording];
     }
     [self.responseDictionary setObject:updatedRecords forKey:key];
 }
