@@ -108,4 +108,7 @@
  */
 + (void)save:(NSString *)path;
 
++ (NSArray *)ignoreMultipleTypes;
++ (void)setIgnoreMultipleTypes:(NSArray *)ignoreMultipleTypes;
+
 @end
