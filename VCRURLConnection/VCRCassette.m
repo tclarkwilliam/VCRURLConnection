@@ -24,7 +24,7 @@
 #import "VCRCassette.h"
 #import "VCRCassette_Private.h"
 #import "VCRRequestKey.h"
-
+#import "VCR.h"
 
 @implementation VCRCassette
 
@@ -69,9 +69,22 @@
     if (!recordings) {
         recordings = @[];
     }
+    
+    BOOL isIngoreMultipleType = FALSE;
+    for (NSString *type in [VCR ignoreMultipleTypes]) {
+        if ([recording.URI hasSuffix:type]) {
+            isIngoreMultipleType = true;
+            break;
+        }
+    }
+    
     NSArray *updatedRecords = [recordings arrayByAddingObject:recording];
+    if (isIngoreMultipleType) {
+        NSArray *updatedRecords = @[recording];
+    }
     [self.responseDictionary setObject:updatedRecords forKey:key];
 }
+
 
 - (VCRRecording *)recordingForRequestKey:(VCRRequestKey *)key {
     NSArray *recordings = self.responseDictionary[key];

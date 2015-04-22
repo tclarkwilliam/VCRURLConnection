@@ -31,7 +31,7 @@
 
 static BOOL _VCRIsRecording;
 static BOOL _VCRIsReplaying;
-
+static NSArray *_VCRIgnoreMultipleTypes;
 
 @implementation VCR
 
@@ -82,6 +82,17 @@ static BOOL _VCRIsReplaying;
 
 + (void)save:(NSString *)path {
     return [[VCRCassetteManager defaultManager] save:path];
+}
+
+
++ (NSArray *)ignoreMultipleTypes
+{
+    return _VCRIgnoreMultipleTypes;
+}
+
++ (void)setIgnoreMultipleTypes:(NSArray *)ignoreMultipleTypes
+{
+    _VCRIgnoreMultipleTypes = ignoreMultipleTypes;
 }
 
 @end
