@@ -36,6 +36,7 @@ static NSString * const VCRIsRecordingRequestKey = @"VCR_recording";
 @implementation VCRRecordingURLProtocol
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
+  NSString *url = [request.URL absoluteString];
     BOOL isAlreadyRecordingRequest = [[self propertyForKey:VCRIsRecordingRequestKey inRequest:request] boolValue];
     BOOL isHTTP = [request.URL.scheme isEqualToString:@"https"] || [request.URL.scheme isEqualToString:@"http"];
     return [VCR isRecording] && !isAlreadyRecordingRequest && isHTTP;
@@ -53,6 +54,7 @@ static NSString * const VCRIsRecordingRequestKey = @"VCR_recording";
     NSURLRequest *request = self.request;
     VCRRecording *recording = [[VCRRecording alloc] init];
     recording.method = request.HTTPMethod;
+    recording.requestBody = request.HTTPBody;
     recording.URI = [[request URL] absoluteString];
     self.recording = recording;
     

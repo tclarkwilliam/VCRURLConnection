@@ -30,6 +30,7 @@
 @implementation VCRReplayingURLProtocol
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
+  NSString *url = [request.URL absoluteString];
     return [VCR isReplaying] && [self recordingExistsForRequest:request] && ([request.URL.scheme isEqualToString:@"https"] || [request.URL.scheme isEqualToString:@"http"]);
 }
 

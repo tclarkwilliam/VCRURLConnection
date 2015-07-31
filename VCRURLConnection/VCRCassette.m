@@ -63,8 +63,17 @@
     
 }
 
+- (id)initWithData:(NSData *)data compareBody:(BOOL)compareBody {
+  NSError *error = nil;
+  id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+  self.compareBody = compareBody;
+  NSAssert([error code] == 0, @"Attempted to initialize VCRCassette with invalid JSON");
+  return [self initWithJSON:json];
+}
+
 - (void)addRecording:(VCRRecording *)recording {
-    VCRRequestKey *key = [VCRRequestKey keyForObject:recording];
+    VCRRequestKey *key = [VCRRequestKey keyForObject:recording
+                                         compareBody:self.compareBody];
     NSArray *recordings = self.responseDictionary[key];
     if (!recordings) {
         recordings = @[];
@@ -98,13 +107,15 @@
 }
 
 - (BOOL)recordExistsForRequest:(NSURLRequest *)request {
-    VCRRequestKey *key = [VCRRequestKey keyForObject:request];
+    VCRRequestKey *key = [VCRRequestKey keyForObject:request
+                                         compareBody:self.compareBody];
     NSArray *recordings = self.responseDictionary[key];
     return recordings.count > 0;
 }
 
 - (VCRRecording *)recordingForRequest:(NSURLRequest *)request {
-    VCRRequestKey *key = [VCRRequestKey keyForObject:request];
+    VCRRequestKey *key = [VCRRequestKey keyForObject:request
+                                         compareBody:self.compareBody];
     return [self recordingForRequestKey:key];
 }
 

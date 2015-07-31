@@ -54,7 +54,10 @@
         
         NSString *body = json[@"body"];
         [self setBody:body];
-        
+      
+        NSString *requestBody = json[@"request_body"];
+        [self setRequestBodyData:requestBody];
+      
         if (json[@"error"]) {
             self.error = [[VCRError alloc] initWithJSON:json[@"error"]];
         }
@@ -65,12 +68,13 @@
 - (BOOL)isEqual:(VCRRecording *)recording {
     return [self.method isEqualToString:recording.method] &&
            [self.URI isEqualToString:recording.URI] &&
-           [self.body isEqualToString:recording.body];
+           [self.body isEqualToString:recording.body] &&
+           [self.serialisedRequestBody isEqualToString:recording.serialisedRequestBody];
 }
 
 - (BOOL)isText {
     NSString *type = [[self HTTPURLResponse] MIMEType] ?: @"text/plain";
-    if ([@[ @"application/x-www-form-urlencoded" ] containsObject:type]) {
+    if ([@[ @"application/x-www-form-urlencoded", @"application/json" ] containsObject:type]) {
         return YES;
     }
     CFStringRef uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef)type, NULL);
@@ -92,12 +96,31 @@
     }
 }
 
+- (void)setRequestBodyData:(id)requestBody
+{
+  if ([requestBody isKindOfClass:[NSDictionary class]]) {
+    self.requestBody = [NSJSONSerialization dataWithJSONObject:requestBody options:0 error:nil];
+  } else if ([self isText]) {
+    self.requestBody = [requestBody dataUsingEncoding:NSUTF8StringEncoding];
+  } else if ([requestBody isKindOfClass:[NSString class]]) {
+    self.requestBody = [[NSData alloc] initWithBase64EncodedString:requestBody options:0];
+  }
+}
+
 - (NSString *)body {
     if ([self isText]) {
         return [[NSString alloc] initWithData:self.data encoding:NSUTF8StringEncoding];
     } else {
         return [self.data base64Encoding];
     }
+}
+
+- (NSString *)serialisedRequestBody {
+  if ([self isText]) {
+    return [[NSString alloc] initWithData:self.requestBody encoding:NSUTF8StringEncoding];
+  } else {
+    return [self.requestBody base64Encoding];
+  }
 }
 
 - (id)JSON {
@@ -110,6 +133,10 @@
     
     if (self.body) {
         dictionary[@"body"] = self.body;
+    }
+  
+    if (self.requestBody) {
+      dictionary[@"request_body"] = self.serialisedRequestBody;
     }
     
     NSError *error = self.error;

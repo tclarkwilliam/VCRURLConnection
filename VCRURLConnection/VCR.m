@@ -31,6 +31,7 @@
 
 static BOOL _VCRIsRecording;
 static BOOL _VCRIsReplaying;
+static BOOL _VCRCompareBody;
 static NSArray *_VCRIgnoreMultipleTypes;
 
 @implementation VCR
@@ -93,6 +94,12 @@ static NSArray *_VCRIgnoreMultipleTypes;
 + (void)setIgnoreMultipleTypes:(NSArray *)ignoreMultipleTypes
 {
     _VCRIgnoreMultipleTypes = ignoreMultipleTypes;
+}
+
++ (void)setCompareBody:(BOOL)compareBody
+{
+    [[VCRCassetteManager defaultManager] setCompareBody:compareBody];
+    _VCRCompareBody = compareBody;
 }
 
 @end

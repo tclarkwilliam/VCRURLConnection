@@ -33,14 +33,18 @@
 
 - (void)setUp {
     NSString *path = @"http://foo/bar";
+    NSString *bodyString = @"this is some data";
+    NSData *body = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     
     NSURL *url = [NSURL URLWithString:path];
-    NSURLRequest *request1 = [[NSURLRequest alloc] initWithURL:url];
+    NSMutableURLRequest *request1 = [[NSMutableURLRequest alloc] initWithURL:url];
+    [request1 setHTTPBody:body];
     self.key1 = [VCRRequestKey keyForObject:request1];
-
+    
     VCRRecording *recording = [[VCRRecording alloc] init];
     recording.method = @"GET";
     recording.URI = path;
+    recording.requestBody = body;
     self.key2 = [VCRRequestKey keyForObject:recording];
 }
 
