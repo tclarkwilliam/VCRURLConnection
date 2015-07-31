@@ -32,5 +32,6 @@
 
 @property (nonatomic, strong) NSURL *currentCassetteURL;
 @property (nonatomic, strong) VCRCassette *currentCassette;
+@property (nonatomic, assign) BOOL compareBody;
 
 @end

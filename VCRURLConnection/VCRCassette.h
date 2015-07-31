@@ -31,6 +31,8 @@
 
 - (id)initWithData:(NSData *)data;
 
+- (id)initWithData:(NSData *)data compareBody:(BOOL)compareBody;
+
 - (id)initWithJSON:(id)json;
 
 - (void)addRecording:(VCRRecording *)recording;
@@ -44,5 +46,7 @@
 - (NSArray *)allKeys;
 
 - (NSData *)data;
+
+@property (nonatomic, assign) BOOL compareBody;
 
 @end

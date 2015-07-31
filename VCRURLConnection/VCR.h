@@ -111,4 +111,6 @@
 + (NSArray *)ignoreMultipleTypes;
 + (void)setIgnoreMultipleTypes:(NSArray *)ignoreMultipleTypes;
 
++ (void)setCompareBody:(BOOL)compareBody;
+
 @end

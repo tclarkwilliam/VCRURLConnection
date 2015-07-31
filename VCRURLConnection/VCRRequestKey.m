@@ -30,6 +30,7 @@
 
 @property (nonatomic, strong, readwrite) NSString *URI;
 @property (nonatomic, strong, readwrite) NSString *method;
+@property (nonatomic, strong, readwrite) NSData *requestBody;
 
 @end
 
@@ -46,10 +47,19 @@
     }
 }
 
++ (VCRRequestKey *)keyForObject:(id)object
+                    compareBody:(BOOL)compareBody
+{
+  VCRRequestKey *key = [self keyForObject:object];
+  key.compareBody = compareBody;
+  return key;
+}
+
 - (id)initWithRecording:(VCRRecording *)recording {
     if ((self = [super init])) {
         self.URI = recording.URI;
         self.method = [recording.method uppercaseString];
+        self.requestBody = recording.requestBody;
     }
     return self;
 }
@@ -58,6 +68,7 @@
     if ((self = [super init])) {
         self.URI = [request.URL absoluteString];
         self.method = [request.HTTPMethod uppercaseString];
+        self.requestBody = request.HTTPBody;
     }
     return self;
 }
@@ -67,11 +78,22 @@
 }
 
 - (BOOL)isEqual:(VCRRequestKey *)key {
-    return [self.method isEqual:key.method] && [self.URI isEqual:key.URI];
+    BOOL isDataEqual = TRUE;
+    if (self.compareBody) {
+        isDataEqual = (!self.requestBody && !key.requestBody) ||
+                      [self.requestBody isEqualToData:key.requestBody];
+    }
+    return [self.method isEqual:key.method] &&
+           [self.URI isEqual:key.URI] &&
+           isDataEqual;
 }
 
 - (NSUInteger)hash {
-    return [self.method hash] ^ [self.URI hash];
+    NSUInteger bodyHash = 0;
+    if (self.compareBody) {
+      bodyHash = [self.requestBody hash];
+    }
+    return [self.method hash] ^ [self.URI hash] ^ bodyHash;
 }
 
 - (id)copyWithZone:(NSZone *)zone {
@@ -79,6 +101,8 @@
     if (key) {
         key.URI = [self.URI copyWithZone:zone];
         key.method = [self.method copyWithZone:zone];
+        key.requestBody = [self.requestBody copyWithZone:zone];
+        key.compareBody = self.compareBody;
     }
     return key;
 }

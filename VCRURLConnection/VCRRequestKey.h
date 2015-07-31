@@ -27,10 +27,14 @@
 @interface VCRRequestKey : NSObject <NSCopying>
 
 + (VCRRequestKey *)keyForObject:(id)object;
++ (VCRRequestKey *)keyForObject:(id)object
+                    compareBody:(BOOL)compareBody;
 
 - (id)JSON;
 
 @property (nonatomic, strong, readonly) NSString *URI;
 @property (nonatomic, strong, readonly) NSString *method;
+@property (nonatomic, strong, readonly) NSData *requestBody;
+@property (nonatomic, assign) BOOL compareBody;
 
 @end
